@@ -1,0 +1,90 @@
+—@——Third Person Camera
+	1. is working
+	2. the ball won’t change the axis as the camera should be.
+
+—@—Object
+	1. init with m_name of node in constructor of A3
+	2. Bind the sceneNode in init of A3
+	3. change the position of object by changing the current speed and current rolling angle
+
+
+—@—Modeling the scene
+	always working on this
+
+
+—@—UI
+    1.loading image
+    2.you win window
+    3.you lose window
+    4.Component graphic user interface
+	
+
+
+—@—Particle systems
+    1. successfully load particle system
+    2. need do more beauty design <- should be okay right now
+
+
+—@—Sound
+	1. background music
+	2. collision sound effect
+
+
+
+—@——Static collision detection
+    Be able to detect the object and one object disappear (egg)
+
+--@- Dynamic Collisio detection
+    be able to detect the object and the object disappear (turtle)
+
+
+—@—Transparency
+    1. by bubbles
+        comparing alpa value
+    then: glDisable(GL_CULL_FACE);   before the transparency texture
+
+          glEnable(GL_CULL_FACE);    after the transparency texture
+          glCullFace(GL_BACK);
+    2. lake/ wet ground
+
+
+
+—@—Reflection Map
+    1. with skymap
+
+
+
+-@—-Texture Mapping
+	1. Working for the earth and plane
+	2. Working for egg
+    3. working for water
+    4. working for sun and lens flare
+
+-@- blend mapping
+    is done but it slow down process.
+
+
+
+
+-@--Skybox
+	1.skybox works right now.
+	2.it has a conflict with
+		  glClear(GL_STENCIL_BUFFER_BIT);
+  		  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	   in normal rendering draw.
+
+
+
+-@--Shadow Mapping:
+	1.Shadow of sun should be removed // sun is gone
+	2.glViewPort doesn't match.
+		 I used SHADOW_WIDTH and SHADOW_HEIGHT in shadowFrame(),
+		 and didn't viewport
+
+
+
+
+-@-Lens Flare:
+	1. lens flare and Sun is done
+    2. Sun position isn't perfect
+

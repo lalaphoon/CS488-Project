@@ -1,0 +1,90 @@
+||=======================================
+||              CS488 - Final Project
+||
+|| 					Mengyi Luo 
+||					20470845
+||					  m22luo
+||
+||==========================================
+
+
+# Compilation 
+
+	1. in project foler: 
+			$premake4 gmake
+			$make
+		if you don't have premake installed, we have an executable 
+			$./premake4 gmake
+	2. in A5 folder:
+			$premake4 gmake
+			$./A5
+
+
+# Objectives
+	Modeling the scene
+	UI
+	Particle system
+	Sound
+	Static Collision detection
+	Transparency
+	Reflection Map
+	Texture Mapping
+	Shadow Mapping     -    imperfect
+	Lens Flare
+ 	
+
+
+
+
+# Extra
+	Dynamic Collision Detection
+
+
+
+
+
+# Manual
+	
+		Q: quit the game
+		ENTER: restart the game
+
+	Player movement:
+		W: moving forward
+		S: moving backward
+		A: rotate to left
+		D: rotate to right
+		SPACE: jump
+
+	Camera on mouse:
+		wheel: zoom in or out
+		left: angle around player
+		right: pitch
+
+
+
+
+
+# Resources
+
+	Models and texture mostly downloaded from: https://www.dropbox.com/sh/vo7dwmaccrtc2ng/AAAr48L7pGsSXs0EEQtkWKspa?dl=0
+
+	Image loading: stb_image
+	Sound loading: IrrKlang
+
+	Sound: 
+		Xiami Music: ICO - heal, Castle in the mist (ending.mp3)
+					 HuangYe - Opening (playing.mp3)
+
+		http://soundbible.com: jump, egg, baby
+
+
+
+# Screenshots
+
+	In Screenshots folder
+		Game: Screenshot01.png  screenshot02.png etc.
+		UI: GameStart.png, YouLose.png, YouWin.png
+
+
+
+
