@@ -1122,11 +1122,11 @@ void A3::initViewMatrix() {
 //----------------------------------------------------------------------------------------
 void A3::initLightSources() {
     // World-space position
-    m_light.position = vec3(0.0f, 20.0f, -14.0f);
+    m_light.position = vec3(0.0f, 30.0f, 25.0f);
     m_light.rgbIntensity = vec3(1.0f); // White light
-    m_light.lightView = glm::lookAt(vec3(0.0f, 20.0f, 14.0f), vec3(0.0f, 0.0f, -6.0f), vec3(0.0f, 1.0f, 0.0f));
+    m_light.lightView = glm::lookAt(vec3(0.0f, 30.0f, 25.0f), vec3(0.0f, 0.0f, -6.0f), vec3(0.0f, 1.0f, 0.0f));
     GLfloat near_plane =-25.0f, far_plane = 50.5f;
-    m_light.projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+    m_light.projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane);
   
 }
 

@@ -46,7 +46,7 @@ void main() {
     vec3 viewVector = normalize(worldPosition.xyz - cameraPosition);
 
 	//-- Convert position and normal to Eye-Space:
-	vs_out.position_ES = vec3( View * ModelView * pos4);
+	vs_out.position_ES = vec3(  ModelView * pos4);
 	vs_out.normal_ES = normalize(NormalMatrix * normal);
 
 	vs_out.light = light;
