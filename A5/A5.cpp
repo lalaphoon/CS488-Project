@@ -65,7 +65,7 @@ static GLfloat * particle_position_size;
 int LastUsedParticle = 0;
 
 
-const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
+const unsigned int SHADOW_WIDTH = 5024, SHADOW_HEIGHT = 5024;
 
 static const GLfloat skyboxVertices[] = {
     -10.0f,  10.0f, -10.0f,
