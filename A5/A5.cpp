@@ -25,6 +25,7 @@ static bool show_gui = true;
 bool reflection;
 bool blended;
 bool blendMap_option;
+bool normaled;
 bool shadow_option;
 
 bool end_game_option;
@@ -41,6 +42,7 @@ Texture shell2D_tex, egg2D_tex;
 Texture gamestart_tex, youwin_tex, youlose_tex;
 Texture turtle_tex;
 Texture tree_tex;
+Texture earth_normal_tex;
 
 Texture tex2;
 Texture tex3;
@@ -163,6 +165,8 @@ m_vbo_gui(0)
     shell2D_tex = Texture();
     egg2D_tex = Texture();
     turtle_tex = Texture();
+    
+    earth_normal_tex = Texture();
     
     blendMap_tex =  Texture();
     grassFlower_tex =  Texture();
@@ -400,6 +404,7 @@ void A3::init()
     
     reflection = false;
     blended = false;
+    normaled = false;
     blendMap_option = true; //<--- initially I want to see this
     shadow_option = false; //<---- initilaly I don't want to see this
     
@@ -428,6 +433,7 @@ void A3::init()
     egg2D_tex.setUp("Assets/gui/nest.png");
     turtle_tex.setUp("Assets/turtle/turtle.png");
     tree_tex.setUp("Assets/tree/tree.png");
+    earth_normal_tex.setUp("Assets/texture/earthNormal.jpg");
     
     skybox.setUp();
     
@@ -735,6 +741,12 @@ void A3::enableVertexShaderInputSlots()
         m_uvAttribLocation = m_shader.getAttribLocation("atextCoord");
         glEnableVertexAttribArray(m_uvAttribLocation);
         
+        m_tangentAttribLocation = m_shader.getAttribLocation("tangent");
+        glEnableVertexAttribArray(m_tangentAttribLocation);
+        
+        m_bitangentAttribLocation = m_shader.getAttribLocation("bitangent");
+        glEnableVertexAttribArray( m_bitangentAttribLocation);
+        
         glBindVertexArray(0);
         
         CHECK_GL_ERRORS;
@@ -845,7 +857,7 @@ void A3::enableVertexShaderInputSlots()
 void A3::uploadVertexDataToVbos (
                                  const MeshConsolidator & meshConsolidator
                                  ) {
-    // Generate VBO to store all vertex position data
+    //1  Generate VBO to store all vertex position data
     {
         glGenBuffers(1, &m_vbo_vertexPositions);
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo_vertexPositions);
@@ -855,7 +867,7 @@ void A3::uploadVertexDataToVbos (
         CHECK_GL_ERRORS;
     
     
-    // Generate VBO to store all vertex normal data
+    // 2 Generate VBO to store all vertex normal data
     
         glGenBuffers(1, &m_vbo_vertexNormals);
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo_vertexNormals);
@@ -864,6 +876,8 @@ void A3::uploadVertexDataToVbos (
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         CHECK_GL_ERRORS;
     
+        
+    //3
     
         glGenBuffers(1, &m_vbo_vertexTextCoords);
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo_vertexTextCoords);
@@ -871,6 +885,24 @@ void A3::uploadVertexDataToVbos (
                      meshConsolidator.getVertexUVDataPtr(),GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         CHECK_GL_ERRORS;
+        
+        
+    // 4
+        glGenBuffers(1, &m_vbo_vertexTangents);
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo_vertexTangents);
+        glBufferData(GL_ARRAY_BUFFER, meshConsolidator.getNumVertexTangentsBytes(),
+                     meshConsolidator.getVertexTangentsPtr(),GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        CHECK_GL_ERRORS;
+        
+    //5
+        glGenBuffers(1, &m_vbo_vertexBitangents);
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo_vertexBitangents);
+        glBufferData(GL_ARRAY_BUFFER, meshConsolidator.getNumVertexBitangentsBytes(),
+                     meshConsolidator.getVertexBitangentsPtr(),GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        CHECK_GL_ERRORS;
+        
     }
     
     
@@ -983,6 +1015,7 @@ void A3::uploadVertexDataToVbos (
 //----------------------------------------------------------------------------------------
 void A3::mapVboDataToVertexShaderInputLocations()
 {
+    {
     // Bind VAO in order to record the data mapping.
     glBindVertexArray(m_vao_meshData);
     
@@ -1005,19 +1038,27 @@ void A3::mapVboDataToVertexShaderInputLocations()
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo_vertexTextCoords);
     glVertexAttribPointer(m_uvAttribLocation, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
     
+    
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo_vertexTangents);
+    glVertexAttribPointer(m_tangentAttribLocation, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo_vertexBitangents);
+    glVertexAttribPointer(m_bitangentAttribLocation, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    
+    
     //-- Unbind target, and restore default values:
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     
     CHECK_GL_ERRORS;
     
+    }
     
     
     
     
     
-    
-    
+    {
     
     // Bind VAO in order to record the data mapping.
     glBindVertexArray(m_vao_arcCircle);
@@ -1033,10 +1074,10 @@ void A3::mapVboDataToVertexShaderInputLocations()
     
     CHECK_GL_ERRORS;
     
+    }
     
     
-    
-    
+    {
     
     glBindVertexArray(m_vao_skybox);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo_skyboxPosition);
@@ -1046,7 +1087,9 @@ void A3::mapVboDataToVertexShaderInputLocations()
     glBindVertexArray(0);
     CHECK_GL_ERRORS;
     
+    }
     
+    {
    
     glBindVertexArray(m_vao_gui);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo_gui);
@@ -1055,7 +1098,9 @@ void A3::mapVboDataToVertexShaderInputLocations()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     CHECK_GL_ERRORS;
+    }
     
+    {
     
     
     glBindVertexArray(m_vao_flare);
@@ -1065,10 +1110,10 @@ void A3::mapVboDataToVertexShaderInputLocations()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     CHECK_GL_ERRORS;
+    }
     
     
-    
-    
+    {
     
     glBindVertexArray(m_vao_sun);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo_sunPosition);
@@ -1077,7 +1122,7 @@ void A3::mapVboDataToVertexShaderInputLocations()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     CHECK_GL_ERRORS;
-    
+    }
     
     
     
@@ -1150,6 +1195,9 @@ void A3::uploadCommonSceneUniforms() {
         // may has a problem here
         location = m_shader.getUniformLocation("blended");
         glUniform1i(location, blended ? 1: 0);
+        
+        location = m_shader.getUniformLocation("normaled");
+        glUniform1i(location, normaled ? 1 : 0);
         
         
        
@@ -1413,6 +1461,10 @@ void A3::updateShaderUniforms( const glm::mat4& MV, unsigned int idx, const glm:
     
     location = m_shader.getUniformLocation("blendMap");
     glUniform1i(location,6);
+    CHECK_GL_ERRORS;
+        
+    location = m_shader.getUniformLocation("normalMap");
+    glUniform1i(location,7);
     CHECK_GL_ERRORS;
         
     
@@ -1786,29 +1838,7 @@ void A3::draw() {
     
     //==============================  Particles - transparency ==========================
     glDisable(GL_CULL_FACE);
-    /*
-    for(int i = 0; i < eggBasket.size() ; i++){
-    if (!eggBasket[i].isVisible()) {
-       // glBindVertexArray(0);
-       // = glBindTexture(GL_TEXTURE_2D, 0);
-        bubble_tex.Bind(0);
-        SceneNode* play = getNode(m_rootNode, eggBasket[i].getObjectName());
-        glm::mat4 m = play->get_transform();
-        drawParticles(m);  //<< ---- can be called by difference of model matrix m
-        //drawParticles(pc, m);
-        }
-    }
-    */
-    
-    /*
-     if (currentTurnSpeed != 0.0){
-     glm::mat4 matrix = glm::mat4();
-     matrix = glm::rotate( glm::mat4(), (float)glm::radians(currentTurnSpeed), glm::vec3(0.0, 1.0, 0.0));
-     node->set_transform(  node->get_transform() * matrix);
-     }
-     */
-    
-    
+  
     
     if ( W_button_pressed || S_button_pressed ){
         bubble_tex.Bind(0);
@@ -1905,7 +1935,7 @@ void A3::renderSceneGraphHelper(SceneNode *node, glm::mat4 M, int flag){
         
         reflection = false; //<-- only true on water
         blended = false; //<== this is only used for map
-        
+        normaled = false; //<=== this is only used for player normal mapping
         
         
         
@@ -2028,6 +2058,7 @@ void A3::renderSceneGraphHelper(SceneNode *node, glm::mat4 M, int flag){
         
         
         else if (gnode->m_name == "player"){
+            normaled = true;
             
             uploadCommonSceneUniforms();
             
@@ -2036,6 +2067,8 @@ void A3::renderSceneGraphHelper(SceneNode *node, glm::mat4 M, int flag){
             
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, depthTexture);
+            
+            earth_normal_tex.Bind(7);
             
            // glActiveTexture(GL_TEXTURE2);
            // glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.getTexture());

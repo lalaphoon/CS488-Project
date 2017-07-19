@@ -3,6 +3,7 @@
 in vec2 textCoord;
 in vec3 reflectedVector;
 uniform bool reflected;
+in mat3 TBN;
 
 uniform sampler2D samUV;   //<-0
 uniform sampler2D shadowMap; //<-1
@@ -12,7 +13,9 @@ uniform sampler2D rTexture; // <-3
 uniform sampler2D gTexture; // <-4
 uniform sampler2D bTexture; //<-5
 uniform sampler2D blendMap; //<-6
+uniform sampler2D normalMap; //<-7
 uniform bool blended;
+uniform bool normaled;
 
 
 
@@ -24,6 +27,8 @@ struct LightSource {
 in VsOutFsIn {
     vec3 position_ES; // Eye-space position
     vec3 normal_ES;   // Eye-space normal
+    vec3 tangent_ES;
+    vec3 bitangent_ES;
     LightSource light;
     flat int umbra;
     vec4 lightSpace_ES;
@@ -134,6 +139,7 @@ vec4 Shader( vec3 fragPosition, vec3 fragNormal){
     
    
     vec3 color;
+    vec3 normal;
     
     if(blended){
         
@@ -150,7 +156,14 @@ vec4 Shader( vec3 fragPosition, vec3 fragNormal){
         color = texture(samUV, textCoord).rgb;
     }
     
-    vec3 normal = normalize(fragNormal);
+    if(normaled){
+    
+    normal = normalize(texture(normalMap, textCoord).rgb * 2.0 - 1.0);
+    } else {
+     normal = normalize(fragNormal);
+        
+    }
+    
     
     
     
@@ -159,11 +172,21 @@ vec4 Shader( vec3 fragPosition, vec3 fragNormal){
     //ambient
     vec3 ambient = 0.7 * color;
     //diffuse
-    vec3 lightDir = normalize(light.position - fragPosition);
+    vec3 lightDir;
+    vec3 viewDir;
+    if(normaled) {
+      lightDir =  TBN * normalize(light.position - fragPosition);
+       viewDir = TBN * normalize(camPos -fragPosition.xyz);
+    
+    } else {
+    lightDir = normalize(light.position - fragPosition);  //<--
+    viewDir = normalize(camPos -fragPosition.xyz);
+    }
+    
     float diff = max(dot(lightDir, normal), 0.0);
     vec3 diffuse = diff * light.rgbIntensity;
     //specular
-    vec3 viewDir = normalize(camPos -fragPosition.xyz);
+ 
     float spec = 0.0;
     vec3 halfwayDir = normalize(lightDir + viewDir);
     spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);

@@ -4,6 +4,8 @@
 in vec3 position;
 in vec3 normal;
 in vec2 atextCoord;
+in vec3 tangent;
+in vec3 bitangent;
 
 struct LightSource {
     vec3 position;
@@ -28,6 +30,10 @@ uniform vec3 cameraPosition;
 out VsOutFsIn {
 	vec3 position_ES; // Eye-space position
 	vec3 normal_ES;   // Eye-space normal
+    
+    vec3 tangent_ES;
+    vec3 bitangent_ES;
+    
 	LightSource light;
     vec4 lightSpace_ES; // FragPosLightSpace
     flat int umbra;
@@ -38,6 +44,7 @@ out vec2 textCoord;
 out vec3 reflectedVector;
 
 out vec3 camPos;
+out mat3 TBN;
 
 
 void main() {
@@ -48,6 +55,9 @@ void main() {
 	//-- Convert position and normal to Eye-Space:
 	vs_out.position_ES = vec3(  ModelView * pos4);
 	vs_out.normal_ES = normalize(NormalMatrix * normal);
+    
+    vs_out.tangent_ES = normalize(NormalMatrix * tangent);
+    vs_out.bitangent_ES = normalize(NormalMatrix * bitangent);
 
 	vs_out.light = light;
     
@@ -62,5 +72,11 @@ void main() {
     textCoord = atextCoord;
     reflectedVector = reflect(viewVector, normalize(normal));
     camPos = cameraPosition;
+    TBN =  transpose(mat3(
+                          vs_out.tangent_ES,
+                          vs_out.bitangent_ES,
+                          vs_out.normal_ES
+                          ));
+    
    
 }

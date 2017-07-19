@@ -100,10 +100,18 @@ protected:
     GLuint m_vao_meshData;
     GLuint m_vbo_vertexPositions;
     GLuint m_vbo_vertexNormals;
+    GLuint m_vbo_vertexTextCoords;    // <-----------------------
+    GLuint m_vbo_vertexTangents;
+    GLuint m_vbo_vertexBitangents;
+    
     GLint m_positionAttribLocation;
     GLint m_normalAttribLocation;
     GLint m_uvAttribLocation;
-    GLuint m_vbo_vertexTextCoords;    // <-----------------------
+    GLint m_tangentAttribLocation;
+    GLint m_bitangentAttribLocation;
+    
+    
+    
     
     ShaderProgram m_shader;
     

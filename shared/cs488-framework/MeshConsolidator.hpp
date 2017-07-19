@@ -40,12 +40,20 @@ public:
 	const float * getVertexNormalDataPtr() const;
     
     const float * getVertexUVDataPtr() const;
+    
+    const float * getVertexTangentsPtr() const;
+    
+    const float * getVertexBitangentsPtr() const;
 
 	size_t getNumVertexPositionBytes() const;
 
 	size_t getNumVertexNormalBytes() const;
     
     size_t getNumVertexUVBytes() const;
+    
+    size_t getNumVertexTangentsBytes() const;
+    
+    size_t getNumVertexBitangentsBytes() const;
 
 	void getBatchInfoMap(BatchInfoMap & batchInfoMap) const;
 
@@ -54,6 +62,9 @@ private:
 	std::vector<glm::vec3> m_vertexPositionData;
 	std::vector<glm::vec3> m_vertexNormalData;
     std::vector<glm::vec2> m_vertexUVData;
+    
+    std::vector<glm::vec3> m_vertexTangents;
+    std::vector<glm::vec3> m_vertexBitangents;
 
 	BatchInfoMap m_batchInfoMap;
 };
