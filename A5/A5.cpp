@@ -375,7 +375,7 @@ void A3::init()
         //getAssetFilePath("sphere.obj"),
         //getAssetFilePath("suzanne.obj"),
         "Assets/models/water.obj",
-        "Assets/models/sphere.obj",
+        "Assets/models/sphere2.obj",
         "Assets/models/maze.obj",
         "Assets/models/egg.obj",
         "Assets/turtle/turtle2.obj",

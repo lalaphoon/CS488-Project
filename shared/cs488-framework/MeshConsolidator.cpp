@@ -4,7 +4,8 @@ using namespace std;
 
 #include "cs488-framework/Exception.hpp"
 #include "cs488-framework/ObjFileDecoder.hpp"
-
+#include <stdio.h>
+#include <iostream>
 
 //----------------------------------------------------------------------------------------
 // Default constructor
@@ -51,14 +52,17 @@ MeshConsolidator::MeshConsolidator(
 
     for(const ObjFilePath & objFile : objFileList) {
 	    ObjFileDecoder::decode(objFile.c_str(), meshId, positions, normals,uvs);
-
+        string fpath = objFile.c_str();
+        string name = fpath.substr(fpath.find_last_of("/\\") + 1);
 	    uint numIndices = positions.size();
 
 	    if (numIndices != normals.size()) {
 		    throw Exception("Error within MeshConsolidator: "
 					"positions.size() != normals.size()\n");
 	    }
-
+        
+        
+        
 	    batchInfo.startIndex = indexOffset;
 	    batchInfo.numIndices = numIndices;
 
